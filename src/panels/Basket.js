@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { withRouter, Link } from 'react-router-dom';
 import accounting from 'accounting';
 
@@ -21,11 +21,37 @@ function validateTime(value) {
   return '23:59'
 }
 
+function saveOrderDetails(data) {
+  window.localStorage.setItem('____orderDetails', JSON.stringify(data));
+}
+
+const DEFAULT_ORDER_DATA = {
+  faster: true, time: '', selfService: false
+}
+
+function loadOrderDetails() {
+  const rawData = window.localStorage.getItem('____orderDetails');
+  if (rawData) {
+    return JSON.parse(rawData);
+  }
+  return DEFAULT_ORDER_DATA
+}
+
 
 const Basket = ({ match: { params: { areaId, itemId }}, foodAreas, order }) => {
   const [ faster, setFaster ] = useState(true);
   const [ time, setTime ] = useState('');
   const [ selfService, setSelfService ] = useState(false);
+
+  useEffect(() => {
+    const { faster, time, selfService } = loadOrderDetails();
+    setFaster(faster);
+    setTime(time);
+    setSelfService(selfService);
+  }, []);
+
+
+
   const area = foodAreas.filter(area => area.id === areaId)[0];
   const item = area.items.filter(item => item.id === itemId)[0];
 
@@ -113,6 +139,7 @@ const Basket = ({ match: { params: { areaId, itemId }}, foodAreas, order }) => {
         <Link
           className="Place__change-product"
           to={`/place/${areaId}/${itemId}`}
+          onClick={() => saveOrderDetails({ faster, time, selfService })}
         >
           Изменить
         </Link>
@@ -163,7 +190,11 @@ const Basket = ({ match: { params: { areaId, itemId }}, foodAreas, order }) => {
         </div>
       </div>
       <footer className="Place__footer">
-        <Link to={`/order/${area.id}/${item.id}`} className="Place__order">
+        <Link 
+          to={`/order/${area.id}/${item.id}`} 
+          className="Place__order" 
+          onClick={() => saveOrderDetails(DEFAULT_ORDER_DATA)}
+        >
           Оплатить {price}
         </Link>
       </footer>
