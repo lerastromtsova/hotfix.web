@@ -7,6 +7,20 @@ import Checkbox from './Checkbox';
 import edit from '../img/edit.svg';
 import './place.css';
 
+// safari polyfill
+function normalizeTime(value) {
+  let time = value.replace(/[^0-9]+/g, '');
+  time = ("0000" + time).slice(-4);
+  return `${time.slice(0, 2)}:${time.slice(2)}`
+}
+
+function validateTime(value) {
+  if (/^([0-1][0-9]|[2][0-3]):([0-5][0-9])$/.test(value)){
+    return value
+  } 
+  return '23:59'
+}
+
 
 const Basket = ({ match: { params: { areaId, itemId }}, foodAreas, order }) => {
   const [ faster, setFaster ] = useState(true);
@@ -123,12 +137,14 @@ const Basket = ({ match: { params: { areaId, itemId }}, foodAreas, order }) => {
           <span>Назначить</span>
           <input
             value={time}
+            type="text"
             onFocus={() => {
               setFaster(false);
             }}
             onChange={event => {
               setFaster(false);
-              setTime(event.target.value);
+              const time = validateTime(normalizeTime(event.target.value));
+              setTime(time);
             }}
             onBlur={() => {
               if (time) {
