@@ -101,7 +101,7 @@ const Place = ({ item, order, onIncrementPosition, onDecrementPosition, area }) 
         )))}
       </ul>
       <footer className="Place__footer">
-        {price !== '0' &&
+        {localStorage.getItem("orders") !== "{}" &&
           <Link to={`/basket/${area.id}/${item.id}`} className="Place__order">
             Оформить заказ ({price})
           </Link>
