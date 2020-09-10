@@ -1,4 +1,7 @@
-Развёрнутый сайт - kozodoi-club-hack.surge.sh
+[hotfix.web] Решение команды hardway
+-------
+
+[Развёрнутый сайт](http://gullible-border.surge.sh)
 
 Для локального развёртывания в корне необходимо выполнить npm i, затем npm start
 
